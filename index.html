@@ -1,89 +1,667 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Formulario Login</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
-      margin: 0;
-      padding: 0;
-    }
-
-    .container {
-      max-width: 400px;
-      margin: 50px auto;
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-
-    h2 {
-      text-align: center;
-      color: #333;
-    }
-
-    input[type="text"],
-    input[type="password"],
-    button {
-      width: 100%;
-      padding: 12px;
-      margin: 8px 0;
-      box-sizing: border-box;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-
-    button {
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #45a049;
-    }
-
-    .message {
-      margin-top: 10px;
-      text-align: center;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Aventura Matemática</title>
+    <style>
+        :root {
+            --primary-color: #74b9ff;
+            --secondary-color: #ff6b6b;
+            --success-color: #2ecc71;
+            --error-color: #e74c3c;
+            --text-color: #333;
+            --light-bg: #f0f8ff;
+            --container-bg: white;
+            --border-radius: 10px;
+            --box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background-color: var(--light-bg);
+            margin: 0;
+            padding: 10px;
+            color: var(--text-color);
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+            background-color: var(--container-bg);
+            padding: 15px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+        
+        h1 {
+            color: var(--secondary-color);
+            text-align: center;
+            margin: 0 0 20px 0;
+            font-size: clamp(1.5rem, 5vw, 2rem);
+        }
+        
+        h2 {
+            font-size: clamp(1.2rem, 4vw, 1.5rem);
+            margin-top: 0;
+            text-align: center;
+        }
+        
+        p {
+            text-align: center;
+            margin: 10px 0;
+        }
+        
+        .game-section, .login-section, .register-section {
+            display: none;
+            padding: 15px;
+            border: 2px dashed var(--primary-color);
+            border-radius: var(--border-radius);
+            margin-bottom: 15px;
+            background-color: #f9f9f9;
+        }
+        
+        .active {
+            display: block;
+        }
+        
+        .vertical-operation {
+            display: inline-block;
+            text-align: right;
+            margin: 10px auto;
+            padding: 10px;
+            background-color: white;
+            border-radius: 5px;
+            overflow-x: auto;
+            max-width: 100%;
+        }
+        
+        .operation-row {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            min-width: 120px;
+            white-space: nowrap;
+        }
+        
+        .operation-symbol {
+            margin-right: 8px;
+            width: 15px;
+        }
+        
+        .operation-line {
+            border-top: 2px solid var(--text-color);
+            margin: 5px 0;
+            padding-top: 5px;
+        }
+        
+        .digit-input {
+            width: 30px;
+            height: 35px;
+            font-size: 18px;
+            text-align: center;
+            margin: 0 2px;
+            border: 1px solid var(--primary-color);
+            border-radius: 3px;
+        }
+        
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            font-size: 16px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            margin: 8px 5px;
+            transition: all 0.3s;
+            width: 100%;
+            max-width: 200px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        button:hover {
+            background-color: #0984e3;
+            transform: scale(1.05);
+        }
+        
+        .feedback {
+            text-align: center;
+            font-size: 20px;
+            margin: 15px 0;
+            min-height: 30px;
+        }
+        
+        .happy-face {
+            color: #fdcb6e;
+            font-size: 30px;
+        }
+        
+        .level-indicator {
+            text-align: center;
+            font-weight: bold;
+            color: #6c5ce7;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .error-message, .success-message {
+            text-align: center;
+            margin: 10px 0;
+            padding: 5px;
+            border-radius: var(--border-radius);
+        }
+        
+        .error-message {
+            color: var(--error-color);
+            background-color: rgba(231, 76, 60, 0.1);
+        }
+        
+        .success-message {
+            color: var(--success-color);
+            background-color: rgba(46, 204, 113, 0.1);
+        }
+        
+        .answer-container {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0;
+            flex-wrap: wrap;
+        }
+        
+        input[type="text"], input[type="password"] {
+            font-size: 16px;
+            padding: 8px;
+            width: 100%;
+            max-width: 250px;
+            text-align: center;
+            border: 2px solid var(--primary-color);
+            border-radius: var(--border-radius);
+            margin: 10px auto;
+            display: block;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Media Queries para móviles */
+        @media (max-width: 480px) {
+            body {
+                padding: 5px;
+                font-size: 14px;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+            
+            .game-section, .login-section, .register-section {
+                padding: 10px;
+            }
+            
+            button {
+                padding: 8px 12px;
+                font-size: 14px;
+                max-width: 180px;
+            }
+            
+            .digit-input {
+                width: 25px;
+                height: 30px;
+                font-size: 16px;
+            }
+            
+            input[type="text"], input[type="password"] {
+                font-size: 14px;
+                padding: 6px;
+                max-width: 200px;
+            }
+            
+            .vertical-operation {
+                padding: 5px;
+            }
+            
+            .operation-row {
+                min-width: 100px;
+            }
+            
+            .feedback {
+                font-size: 18px;
+            }
+        }
+        
+        @media (max-width: 360px) {
+            .digit-input {
+                width: 22px;
+                height: 28px;
+                font-size: 14px;
+                margin: 0 1px;
+            }
+            
+            button {
+                max-width: 160px;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="container">
+        <h1>🌟 Aventura Matemática 🌟</h1>
+        
+        <!-- Sección de Login -->
+        <div id="login-section" class="login-section active">
+            <h2>¡Bienvenido!</h2>
+            <p>Ingresa tus datos para comenzar:</p>
+            <input type="text" id="username" placeholder="Usuario" required>
+            <input type="password" id="password" placeholder="Contraseña" required>
+            <button id="login-btn">Iniciar Sesión</button>
+            <button id="show-register">Registrarse</button>
+            <div id="login-message" class="error-message"></div>
+        </div>
+        
+        <!-- Sección de Registro -->
+        <div id="register-section" class="register-section">
+            <h2>Registro</h2>
+            <input type="text" id="new-username" placeholder="Nuevo usuario" required>
+            <input type="password" id="new-password" placeholder="Contraseña" required>
+            <input type="password" id="confirm-password" placeholder="Confirmar contraseña" required>
+            <button id="register-btn">Registrarse</button>
+            <button id="back-to-login">Volver a Login</button>
+            <div id="register-message" class="error-message"></div>
+        </div>
+        
+        <!-- Sección del Juego -->
+        <div id="game-section" class="game-section">
+            <div class="level-indicator">
+                Nivel: <span id="current-level">1</span> - 
+                Puntos: <span id="points">0</span>
+            </div>
+            
+            <div class="problem">
+                <p id="operation-type">Suma</p>
+                <div class="vertical-operation" id="vertical-operation"></div>
+                <div class="answer-container" id="answer-container"></div>
+                <button id="check-answer">Comprobar</button>
+                <button id="next-problem" style="display: none;">Siguiente</button>
+            </div>
+            
+            <div class="feedback" id="feedback"></div>
+            
+            <button id="logout-btn">Cerrar Sesión</button>
+        </div>
+    </div>
 
-  <div class="container">
-    <h2>Iniciar Sesión</h2>
-    <input type="text" id="usuario" placeholder="Usuario" />
-    <input type="password" id="clave" placeholder="Contraseña" />
-    <button onclick="login()">Entrar</button>
-    <div class="message" id="message"></div>
-  </div>
-
-  <script>
-    async function login() {
-      const usuario = document.getElementById("usuario").value;
-      const clave = document.getElementById("clave").value;
-
-      const url = `https://script.google.com/macros/s/AKfycbxhkHFbOffakyntd-kg0qZhYi1mekjVM_dooxyH8jp6OBlK6YZpMbuS0d0kbeYOJM343Q/exec?action=login&usuario=${encodeURIComponent(usuario)}&clave=${encodeURIComponent(clave)}`;
-
-      const res = await fetch(url);
-      const data = await res.json();
-
-      const msgDiv = document.getElementById("message");
-
-      if (data.success) {
-        msgDiv.innerText = `¡Bienvenido, ${data.usuario}! Nivel: ${data.nivel}`;
-      } else {
-        msgDiv.innerText = data.message;
-      }
-    }
-  </script>
-
+    <script>
+        // Configuración - REEMPLAZA CON TU URL
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxhkHFbOffakyntd-kg0qZhYi1mekjVM_dooxyH8jp6OBlK6YZpMbuS0d0kbeYOJM343Q/exec';
+        
+        // Variables del juego
+        let currentUser = null;
+        let currentLevel = 1;
+        let points = 0;
+        let currentOperation = 'add';
+        let correctAnswers = 0;
+        let currentProblem = null;
+        let digitInputs = [];
+        
+        // Elementos del DOM
+        const loginSection = document.getElementById('login-section');
+        const registerSection = document.getElementById('register-section');
+        const gameSection = document.getElementById('game-section');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const newUsernameInput = document.getElementById('new-username');
+        const newPasswordInput = document.getElementById('new-password');
+        const confirmPasswordInput = document.getElementById('confirm-password');
+        const loginBtn = document.getElementById('login-btn');
+        const registerBtn = document.getElementById('register-btn');
+        const showRegisterBtn = document.getElementById('show-register');
+        const backToLoginBtn = document.getElementById('back-to-login');
+        const loginMessage = document.getElementById('login-message');
+        const registerMessage = document.getElementById('register-message');
+        const currentLevelSpan = document.getElementById('current-level');
+        const pointsSpan = document.getElementById('points');
+        const verticalOperation = document.getElementById('vertical-operation');
+        const answerContainer = document.getElementById('answer-container');
+        const checkAnswerBtn = document.getElementById('check-answer');
+        const nextProblemBtn = document.getElementById('next-problem');
+        const feedbackDiv = document.getElementById('feedback');
+        const operationType = document.getElementById('operation-type');
+        const logoutBtn = document.getElementById('logout-btn');
+        
+        // Event listeners
+        loginBtn.addEventListener('click', loginUser);
+        registerBtn.addEventListener('click', registerUser);
+        showRegisterBtn.addEventListener('click', () => {
+            loginSection.classList.remove('active');
+            registerSection.classList.add('active');
+        });
+        backToLoginBtn.addEventListener('click', () => {
+            registerSection.classList.remove('active');
+            loginSection.classList.add('active');
+        });
+        checkAnswerBtn.addEventListener('click', checkAnswer);
+        nextProblemBtn.addEventListener('click', generateProblem);
+        logoutBtn.addEventListener('click', logout);
+        
+        // Función para mostrar mensajes
+        function showMessage(element, message, type) {
+            element.textContent = message;
+            element.className = type === 'error' ? 'error-message' : 'success-message';
+        }
+        
+        // Función para mostrar carga
+        function showLoading(button, show) {
+            if (show) {
+                button.innerHTML = `<span class="loading"></span> Procesando...`;
+                button.disabled = true;
+            } else {
+                button.textContent = button === loginBtn ? 'Iniciar Sesión' : 'Registrarse';
+                button.disabled = false;
+            }
+        }
+        
+        // Función para manejar login
+        async function loginUser() {
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value.trim();
+            
+            if (!username || !password) {
+                showMessage(loginMessage, 'Por favor ingresa usuario y contraseña', 'error');
+                return;
+            }
+            
+            showLoading(loginBtn, true);
+            
+            try {
+                const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=login&usuario=${encodeURIComponent(username)}&clave=${encodeURIComponent(password)}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    currentUser = result.usuario;
+                    currentLevel = result.nivel || 1;
+                    points = result.puntos || 0;
+                    correctAnswers = result.correctas || 0;
+                    
+                    currentLevelSpan.textContent = currentLevel;
+                    pointsSpan.textContent = points;
+                    
+                    loginSection.classList.remove('active');
+                    gameSection.classList.add('active');
+                    showMessage(loginMessage, '', 'success');
+                    
+                    generateProblem();
+                } else {
+                    showMessage(loginMessage, result.message || 'Error al iniciar sesión', 'error');
+                }
+            } catch (error) {
+                showMessage(loginMessage, 'Error de conexión. Intenta nuevamente.', 'error');
+                console.error('Login error:', error);
+            } finally {
+                showLoading(loginBtn, false);
+            }
+        }
+        
+        // Función para manejar registro
+        async function registerUser() {
+            const username = newUsernameInput.value.trim();
+            const password = newPasswordInput.value.trim();
+            const confirmPassword = confirmPasswordInput.value.trim();
+            
+            if (!username || !password || !confirmPassword) {
+                showMessage(registerMessage, 'Por favor completa todos los campos', 'error');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showMessage(registerMessage, 'Las contraseñas no coinciden', 'error');
+                return;
+            }
+            
+            if (username.length < 4 || password.length < 4) {
+                showMessage(registerMessage, 'Usuario y contraseña deben tener al menos 4 caracteres', 'error');
+                return;
+            }
+            
+            showLoading(registerBtn, true);
+            
+            try {
+                const formData = new FormData();
+                formData.append('action', 'register');
+                formData.append('usuario', username);
+                formData.append('clave', password);
+                
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage(registerMessage, '¡Registro exitoso! Por favor inicia sesión', 'success');
+                    setTimeout(() => {
+                        registerSection.classList.remove('active');
+                        loginSection.classList.add('active');
+                        usernameInput.value = username;
+                        passwordInput.value = '';
+                        newUsernameInput.value = '';
+                        newPasswordInput.value = '';
+                        confirmPasswordInput.value = '';
+                        registerMessage.textContent = '';
+                    }, 2000);
+                } else {
+                    showMessage(registerMessage, result.message || 'Error al registrar', 'error');
+                }
+            } catch (error) {
+                showMessage(registerMessage, 'Error de conexión. Intenta nuevamente.', 'error');
+                console.error('Register error:', error);
+            } finally {
+                showLoading(registerBtn, false);
+            }
+        }
+        
+        // Función para generar problemas matemáticos
+        function generateProblem() {
+            nextProblemBtn.style.display = 'none';
+            checkAnswerBtn.style.display = 'block';
+            feedbackDiv.textContent = '';
+            
+            let num1, num2, result;
+            const maxNumber = getMaxNumberForLevel();
+            
+            switch (currentOperation) {
+                case 'add':
+                    operationType.textContent = 'Suma';
+                    num1 = Math.floor(Math.random() * maxNumber) + 1;
+                    num2 = Math.floor(Math.random() * maxNumber) + 1;
+                    result = num1 + num2;
+                    break;
+                    
+                case 'subtract':
+                    operationType.textContent = 'Resta';
+                    num1 = Math.floor(Math.random() * maxNumber) + 1;
+                    num2 = Math.floor(Math.random() * num1) + 1;
+                    result = num1 - num2;
+                    break;
+            }
+            
+            currentProblem = { num1, num2, result };
+            showVerticalOperation(num1, num2);
+            createDigitInputs(result.toString().length);
+            
+            if (digitInputs.length > 0) {
+                digitInputs[0].focus();
+            }
+        }
+        
+        // Función para mostrar operaciones en formato vertical
+        function showVerticalOperation(num1, num2) {
+            const num1Str = num1.toString();
+            const num2Str = num2.toString();
+            const maxLength = Math.max(num1Str.length, num2Str.length);
+            const paddedNum1 = num1Str.padStart(maxLength, ' ');
+            const paddedNum2 = num2Str.padStart(maxLength, ' ');
+            
+            verticalOperation.innerHTML = `
+                <div class="operation-row">
+                    <div class="operation-symbol">${currentOperation === 'add' ? '+' : '-'}</div>
+                    <div>${paddedNum1.split('').join(' ')}</div>
+                </div>
+                <div class="operation-row">
+                    <div class="operation-symbol"></div>
+                    <div>${paddedNum2.split('').join(' ')}</div>
+                </div>
+                <div class="operation-line"></div>
+            `;
+        }
+        
+        // Función para crear inputs de dígitos
+        function createDigitInputs(digitCount) {
+            answerContainer.innerHTML = '';
+            digitInputs = [];
+            
+            for (let i = 0; i < digitCount; i++) {
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.className = 'digit-input';
+                input.maxLength = 1;
+                input.dataset.position = i;
+                
+                input.addEventListener('input', function() {
+                    if (this.value.length === 1) {
+                        const nextInput = digitInputs[parseInt(this.dataset.position) + 1];
+                        if (nextInput) nextInput.focus();
+                    }
+                });
+                
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Backspace' && this.value.length === 0) {
+                        const prevInput = digitInputs[parseInt(this.dataset.position) - 1];
+                        if (prevInput) prevInput.focus();
+                    }
+                });
+                
+                answerContainer.appendChild(input);
+                digitInputs.push(input);
+            }
+        }
+        
+        // Función para verificar respuestas
+        async function checkAnswer() {
+            let userAnswer = '';
+            for (let i = 0; i < digitInputs.length; i++) {
+                const value = digitInputs[i].value;
+                if (value === '' || isNaN(value)) {
+                    showMessage(feedbackDiv, 'Por favor completa todos los dígitos', 'error');
+                    return;
+                }
+                userAnswer += value;
+            }
+            
+            const userValue = parseInt(userAnswer);
+            if (isNaN(userValue)) {
+                showMessage(feedbackDiv, 'Respuesta inválida', 'error');
+                return;
+            }
+            
+            const isCorrect = userValue === currentProblem.result;
+            
+            if (isCorrect) {
+                correctAnswers++;
+                points += currentLevel * 10;
+                showMessage(feedbackDiv, '¡Correcto! 😊', 'success');
+                
+                if (correctAnswers >= currentLevel * 4) {
+                    currentLevel++;
+                    correctAnswers = 0;
+                    showMessage(feedbackDiv, `¡Subiste al nivel ${currentLevel}! 🎉`, 'success');
+                }
+            } else {
+                points = Math.max(0, points - 5);
+                showMessage(feedbackDiv, `¡Oops! La respuesta es ${currentProblem.result}`, 'error');
+            }
+            
+            // Actualizar UI
+            currentLevelSpan.textContent = currentLevel;
+            pointsSpan.textContent = points;
+            
+            checkAnswerBtn.style.display = 'none';
+            nextProblemBtn.style.display = 'block';
+            
+            // Guardar progreso
+            await saveProgress(isCorrect);
+        }
+        
+        // Función para guardar progreso
+        async function saveProgress(isCorrect) {
+            if (!currentUser) return;
+            
+            try {
+                const formData = new FormData();
+                formData.append('action', 'save');
+                formData.append('usuario', currentUser);
+                formData.append('nivel', currentLevel);
+                formData.append('puntos', points);
+                formData.append('correctas', correctAnswers);
+                formData.append('operacion', currentOperation);
+                formData.append('correcto', isCorrect ? '1' : '0');
+                
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta del servidor');
+                }
+                
+                const result = await response.json();
+                
+                if (!result.success) {
+                    console.error('Error al guardar:', result.message);
+                }
+            } catch (error) {
+                console.error('Error al guardar progreso:', error);
+            }
+        }
+        
+        // Función para cerrar sesión
+        async function logout() {
+            await saveProgress(false);
+            currentUser = null;
+            gameSection.classList.remove('active');
+            loginSection.classList.add('active');
+        }
+        
+        // Función para determinar el rango de números según el nivel
+        function getMaxNumberForLevel() {
+            if (currentLevel <= 3) return 10;
+            if (currentLevel <= 6) return 20;
+            return 50;
+        }
+    </script>
 </body>
 </html>
-
