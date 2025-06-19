@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Usuarios</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      margin: 0;
+      background-color: #f0f2f5;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    button {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      box-sizing: border-box;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #respuesta {
+      margin-top: 15px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Iniciar Sesión</h2>
+  <form id="loginForm">
+    <input type="text" name="usuario" placeholder="Usuario" required>
+    <input type="password" name="clave" placeholder="Contraseña" required>
+    <button type="submit">Entrar</button>
+  </form>
+  <div id="respuesta"></div>
+</div>
+
+<script>
+  document.getElementById("loginForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const usuario = formData.get("usuario");
+    const clave = formData.get("clave");
+
+    fetch(`https://script.google.com/macros/s/AKfycbxhkHFbOffakyntd-kg0qZhYi1mekjVM_dooxyH8jp6OBlK6YZpMbuS0d0kbeYOJM343Q/exec?action=login&usuario=${encodeURIComponent(usuario)}&clave=${encodeURIComponent(clave)}`)
+      .then(response => response.json())
+      .then(data => {
+        const respuesta = document.getElementById("respuesta");
+        if (data.success) {
+          respuesta.innerHTML = `<p>Bienvenido, ${data.usuario}. Nivel: ${data.nivel}</p>`;
+        } else {
+          respuesta.innerHTML = `<p style="color: red;">${data.message}</p>`;
+        }
+      })
+      .catch(error => {
+        document.getElementById("respuesta").innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+      });
+  });
+</script>
+
+</body>
+</html>
