@@ -1,27 +1,29 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login - Usuarios</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Formulario Login</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      padding: 20px;
+      background: #f5f5f5;
       margin: 0;
-      background-color: #f0f2f5;
+      padding: 0;
     }
 
     .container {
       max-width: 400px;
-      margin: auto;
+      margin: 50px auto;
       background: white;
       padding: 20px;
       border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
 
     h2 {
       text-align: center;
+      color: #333;
     }
 
     input[type="text"],
@@ -29,62 +31,59 @@
     button {
       width: 100%;
       padding: 12px;
-      margin: 10px 0;
+      margin: 8px 0;
       box-sizing: border-box;
       border-radius: 5px;
       border: 1px solid #ccc;
     }
 
     button {
-      background-color: #007bff;
+      background-color: #4CAF50;
       color: white;
       border: none;
+      cursor: pointer;
     }
 
     button:hover {
-      background-color: #0056b3;
+      background-color: #45a049;
     }
 
-    #respuesta {
-      margin-top: 15px;
+    .message {
+      margin-top: 10px;
       text-align: center;
     }
   </style>
 </head>
 <body>
 
-<div class="container">
-  <h2>Iniciar Sesión</h2>
-  <form id="loginForm">
-    <input type="text" name="usuario" placeholder="Usuario" required>
-    <input type="password" name="clave" placeholder="Contraseña" required>
-    <button type="submit">Entrar</button>
-  </form>
-  <div id="respuesta"></div>
-</div>
+  <div class="container">
+    <h2>Iniciar Sesión</h2>
+    <input type="text" id="usuario" placeholder="Usuario" />
+    <input type="password" id="clave" placeholder="Contraseña" />
+    <button onclick="login()">Entrar</button>
+    <div class="message" id="message"></div>
+  </div>
 
-<script>
-  document.getElementById("loginForm").addEventListener("submit", function(e) {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const usuario = formData.get("usuario");
-    const clave = formData.get("clave");
+  <script>
+    async function login() {
+      const usuario = document.getElementById("usuario").value;
+      const clave = document.getElementById("clave").value;
 
-    fetch(`https://script.google.com/macros/s/AKfycbxhkHFbOffakyntd-kg0qZhYi1mekjVM_dooxyH8jp6OBlK6YZpMbuS0d0kbeYOJM343Q/exec?action=login&usuario=${encodeURIComponent(usuario)}&clave=${encodeURIComponent(clave)}`)
-      .then(response => response.json())
-      .then(data => {
-        const respuesta = document.getElementById("respuesta");
-        if (data.success) {
-          respuesta.innerHTML = `<p>Bienvenido, ${data.usuario}. Nivel: ${data.nivel}</p>`;
-        } else {
-          respuesta.innerHTML = `<p style="color: red;">${data.message}</p>`;
-        }
-      })
-      .catch(error => {
-        document.getElementById("respuesta").innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
-      });
-  });
-</script>
+      const url = `https://script.google.com/macros/s/AKfycbxhkHFbOffakyntd-kg0qZhYi1mekjVM_dooxyH8jp6OBlK6YZpMbuS0d0kbeYOJM343Q/exec?action=login&usuario=${encodeURIComponent(usuario)}&clave=${encodeURIComponent(clave)}`;
+
+      const res = await fetch(url);
+      const data = await res.json();
+
+      const msgDiv = document.getElementById("message");
+
+      if (data.success) {
+        msgDiv.innerText = `¡Bienvenido, ${data.usuario}! Nivel: ${data.nivel}`;
+      } else {
+        msgDiv.innerText = data.message;
+      }
+    }
+  </script>
 
 </body>
 </html>
+
